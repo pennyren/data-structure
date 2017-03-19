@@ -1,2 +1,2 @@
 # data-structure
-describe the data structures and algorithms in c language
+As we know, The fundamental learning computer science and programming is data structures and algorithms. There will be two parts inculde c language and data structure. Let's get started, have fun. :)

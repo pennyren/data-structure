@@ -107,3 +107,35 @@ strcmp(word1, word2);
 ```
 
 ## 结构
+
+结构是一个或多个变量的集合，与数组不同，结构中的变量可能为不同的类型。
+
+```c
+//定义。student为结构类型名
+struct student {
+	int sex;
+	int birthday;
+	double height;
+};
+//定义并声明变量
+struct student {
+	int sex;
+	int birthday;
+	double height;
+} stu1, stu2;
+
+//访问
+scanf("%d", &stu1.sex);
+stu1.birthday;
+
+//初始化
+struct point {
+	int x;
+	int y;
+}
+struct point pt = {32, 20};
+
+//结构数组
+struct student stu[20];
+printf("%s", stu[1].name);
+```

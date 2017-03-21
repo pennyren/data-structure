@@ -52,13 +52,10 @@ printf("%d", p1[1]);
 计算字符串长度。
 
 ```c
-int strlen(char str[]) {
-	char *p = 0;
-	p = str;
-	while (*p != '\0') {
-		p++;
-	}
-	return p - str;
+int strlen(char *s) {
+	int c = 0;
+	while (*(s + c)) c++;
+	return c;
 }
 ```
 
@@ -101,13 +98,24 @@ scanf("%s", str);
 字符数组倒序
 
 ```c
-char[] reverse(char str[]) {
-	char *p = str;
-	int i = 0;
-	while (*p != '\0') p++;
-	char newArr[p-str];
-	while (p > str) newArr[i++] = *p--;
-	return newArr;
+void reverse(char *string) {
+   int length, c;
+   char *begin, *end, temp;
+ 
+   length = strlen(string);
+   begin = string;
+   end = string;
+ 
+   for (c = 0; c < length - 1; c++) end++;
+ 
+   for (c = 0; c < length/2; c++) {        
+      temp   = *end;
+      *end   = *begin;
+      *begin = temp;
+ 
+      begin++;
+      end--;
+   }
 }
 ```
 
@@ -137,3 +145,13 @@ printf("%c", *(p[2] + 3));
 ```
 
 ## 指向指针的指针
+
+由于指针变量本身是一个变量，它被存储在计算机内存特定地址处，因此可以创建指向指针的指针。
+
+```c
+int a = 123;
+int *p = &a;
+int **p1 = &p;
+```
+
+声明和使用指向指针的指针被称为多重间接。对于多重间接的层数没有任何限制，但多余两层无任何好处，无疑是自找麻烦。

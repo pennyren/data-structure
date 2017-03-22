@@ -1,3 +1,1 @@
-int arr_length() {
-	
-}
+#define arr_length(a) (sizeof(a) / sizeof(a[0]))

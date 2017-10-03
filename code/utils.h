@@ -90,7 +90,7 @@ int toNumber(char a[]) {
     offset = (sign == -1) ? 1 : 0;
 
     while (a[offset] != '\0') {
-        num = num * 10 + a[c] - '0';
+        num = num * 10 + a[offset] - '0';
         offset++;
     }
 

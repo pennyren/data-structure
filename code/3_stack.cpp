@@ -1,48 +1,53 @@
 #include <stdio.h>
-#include <stdlib.h>
-#define true 1
-#define false 0
-typedef int boolean;
+#include "utils.h"
 
-typedef struct LNode{
+typedef struct CNode{
 	char data;
-	struct LNode *next;
-}LNode, *LinkList;
+	struct CNode *next;
+}CNode, *CharList;
 
-
-boolean isCentralSymmetry(LinkList &L, int n);
-
-LinkList createList() {
+CharList createCharList() {
 	char el;
-    LinkList L = (LinkList)malloc(sizeof(LNode));
-	LNode *r = L;
+    CharList L = (CharList)malloc(sizeof(CNode));
+	CNode *r = L;
 	L->next = NULL;
 	scanf("%c", &el);
 	while(el != 'q') {
-		LNode *node = (LNode*)malloc(sizeof(LNode));
-		node->data = el;
-        r->next = node;
-		r = node;
-
+		CNode *p = (CNode*)malloc(sizeof(CNode));
+		p->data = el;
+        r->next = p;
+		r = p;
         scanf("%c", &el);
 	}
+	r->next = NULL;
 	return L;
 }
 
+int length(CharList L) {
+    int i = 0;
+    CNode *p = L->next;
+    while (p) {
+        i++;
+        p = p->next;
+    }
+    return i;
+}
+
+boolean isCentralSymmetry(CharList L, int n);
+
 int main() {
-    LinkList L = createList();
-    int result = isCentralSymmetry(L, 6);
-    printf("isCentralSymmetry: %d", result);
+    CharList L = createCharList();
+    printf("isCentralSymmetry: %d", isCentralSymmetry(L, length(L)));
     return 0;
 }
 
 //判断字符串链是否中心对称，如xyx,xyyx
 //使用栈，扫描前半部分时入栈，后半部分则与栈顶元素比较，相等则出栈。
 //注意输入时候空格也是一个字符。
-boolean isCentralSymmetry(LinkList &L, int n) {
+boolean isCentralSymmetry(CharList L, int n) {
     char elStack[n/2]; //字符栈
     int top = -1;
-    LNode *p = L->next;
+    CNode *p = L->next;
     for (int i = 0; i < n/2; i++) {
         elStack[++top] = p->data;
         p = p->next;

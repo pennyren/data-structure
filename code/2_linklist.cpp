@@ -1,63 +1,47 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include "utils.h"
 
-typedef struct LNode{
-	int data;
-	struct LNode *next;
-}LNode, *LinkList;
-
-LinkList createList(int isSeq);
-void printList(LinkList &L);
-void delElement(LinkList &L, int el);
-void reversePrint(LinkList &L);
-void reverse1(LinkList &L);
-void reverse2(LinkList &L);
-LinkList split(LinkList &L);
-LinkList merge(LinkList &La, LinkList &Lb);
-int search(LinkList L, int k);
+void del(LinkList &L, int el);
+void reverse(LinkList &L);
+int inverseSearch(LinkList L, int k);
 void unique(LinkList &L, int n);
+LinkList split(LinkList &L);
+
+LinkList merge(LinkList &La, LinkList &Lb);
+void reversePrint(LinkList &L);
 
 
 int main() {
-	LinkList L = createList(1);
-	unique(L, 20);
-	printList(L);
+	LinkList L = createList();
+
+    //1 3 5 -3 4 2 9 3 2 5 6 7 -1
+	printf("Origin: ");
+	printList(L, listLength(L));
+
+	printf("Delete Element 3: ");
+	del(L, 3);
+	printList(L, listLength(L));
+
+	printf("Reverse: ");
+	reverse(L);
+	printList(L, listLength(L));
+
+	printf("Inverse Position 2 element: %d\n", inverseSearch(L, 2));
+
+	printf("Unique: ");
+	unique(L, listLength(L));
+	printList(L, listLength(L));
+
+	printf("Split:\n");
+	LinkList La = split(L);
+	printList(La, listLength(La));
+	printList(L, listLength(L));
+
     return 0;
 }
 
-//创建链表
-LinkList createList(int isSeq) {
-	int el;
-    LinkList L = (LinkList)malloc(sizeof(LNode));
-	LNode *r = L;
-	L->next = NULL;
-	scanf("%d", &el);
-	while(el != -1) {
-		LNode *node = (LNode*)malloc(sizeof(LNode));
-		if (isSeq) {
-			r->next = node; //尾插法
-			r = node;
-			r->next = NULL;
-		} else {
-			node->next = L->next; //头插法
-			L->next = node;
-		}
-		node->data = el;
-		scanf("%d", &el);
-	}
-	return L;
-}
-
-void printList(LinkList &L) {
-	LNode *p = L->next;
-	while(p) {
-		p->next ? printf("%d -> ", p->data) : printf("%d", p->data);
-		p = p->next;
-	}
-}
-
 //删除链表中元素
-void delElement(LinkList &L, int el) {
+void del(LinkList &L, int el) {
 	LNode *pre = L, *p = L->next, *q;
 	while(p) {
 		if (p->data == el) {
@@ -80,20 +64,8 @@ void reversePrint(LinkList &L) {
 	printf("%d ", L->data);
 }
 
-//链表逆置，摘取节点再用头插法。
-void reverse1(LinkList &L) {
-    LNode *p = L->next, *r;
-    L->next = NULL;
-    while (p) {
-        r = p->next; //暂存后继
-        p->next = L->next; //头插法
-        L->next = p;
-        p = r;
-    }
-}
-
 //直接指针反转
-void reverse2(LinkList &L) {
+void reverse(LinkList &L) {
     LNode *pre, *p = L->next, *r = p->next;
     p->next = NULL; //处理第一个节点
     while (r) {
@@ -104,6 +76,36 @@ void reverse2(LinkList &L) {
         p->next = pre; //指针反转
     }
     L->next = p; //处理最后一个节点
+}
+
+//链表逆置，摘取节点再用头插法。
+void _reverse(LinkList &L) {
+    LNode *p = L->next, *r;
+    L->next = NULL;
+    while (p) {
+        r = p->next; //暂存后继
+        p->next = L->next; //头插法
+        L->next = p;
+        p = r;
+    }
+}
+
+//查找倒数第k个位置节点，一次遍历。
+//初始p,q同时指向第一个节点，p移动第k个位置后，p,q同时往后移，直到p移到最后一个位置，q所指节点即为倒数第k个节点。
+int inverseSearch(LinkList L, int k) {
+    LNode *p = L->next, *q = p; //同时指向第一个节点。
+    int count = 0;
+    while (p) {
+        if (count < k) {
+            count++;
+        } else {
+            q = q->next;
+        }
+        p = p->next;
+    }
+
+    //范围超出边际,false
+    return (count < k) ? false : q->data;
 }
 
 //拆分，C={a1,b1,a2,b2,..,an,bn},带头结点hc,拆分为A={a1,a2,...,an},B={bn,..,b2,b1}
@@ -132,7 +134,6 @@ LinkList split(LinkList &L) {
 //两链表A和B，元素都递增排列，将A与B交集存于A中
 //归并扫描，只有同时出现在两集合中的元素才链接到结果表中且仅保留一个，其余节点全部释放，当一个表遍历完毕，释放另一个表。
 //典型的双指针法
-
 LinkList merge(LinkList &La, LinkList &Lb) {
     LNode *pa = La->next;
     LNode *pb = Lb->next;
@@ -171,33 +172,13 @@ LinkList merge(LinkList &La, LinkList &Lb) {
     return La;
 }
 
-//查找倒数第k个位置节点，一次遍历。
-//初始p,q同时指向第一个节点，p移动第k个位置后，p,q同时往后移，直到p移到最后一个位置，q所指节点即为倒数第k个节点。
-int search(LinkList L, int k) {
-    LNode *p = L->next, *q = p; //同时指向第一个节点。
-    int count = 0;
-    while (p) {
-        if (count < k) {
-            count++;
-        } else {
-            q = q->next;
-        }
-        p = p->next;
-    }
-    if (count < k) { //范围超出边际
-        return 0;
-    } else {
-        printf("%d", q->data);
-        return 1;
-    }
-}
+
 
 //要求删除列表中元素绝对值相同的节点，只保留第一个
 //每个节点绝对值最大值为n
 //用空间换取时间，用check[|data|]来对节点计数，初始化为0.
 //辅助数组大小为n+1,依次扫描表中节点，同时检测check[|data]的值
 //如果为0，则保留该节点，并check[|data|] = 1；否则从表中删除该节点。
-
 void unique(LinkList &L, int n) {
     int *check = (int *)malloc(sizeof(int) * (n + 1));
     for (int i = 0; i < n + 1; i++) {

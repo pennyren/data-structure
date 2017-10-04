@@ -7,8 +7,35 @@
 #define false 0
 #define arrayLength(a) (sizeof(a) / sizeof(*a))
 
+#define maxSize 20
+
 typedef enum {array, list, stack, queue, tree, graph} structdef;
 typedef int boolean;
+
+//-------------------SqList--------------------//
+//静态分配
+typedef struct {
+	int data[maxSize];
+	int length;
+}SqList;
+
+//动态分配
+typedef struct {
+	int *data;
+	int length;
+}SeqList;
+
+SqList initSqList(int A[], int length) {
+    SqList L;
+    L.length = length;
+    int pos = 0;
+    while (pos < length) {
+        L.data[pos] = A[pos];
+        pos++;
+    }
+    return L;
+}
+
 
 //--------------------LinkList---------------//
 typedef struct LNode{
@@ -22,6 +49,7 @@ LinkList createList() {
 	LNode *r = L;
 	L->next = NULL;
 	scanf("%d", &el);
+	//尾插法，输入顺序与构造出的链表一致，附设尾指针
 	while(el != -1) {
 		LNode *node = (LNode*)malloc(sizeof(LNode));
         node->data = el;
@@ -31,6 +59,8 @@ LinkList createList() {
 	}
 	r->next = NULL;
 	return L;
+	//头插法，输入顺序与结果链表逆序
+	//node->next = L->next;L->next = node;
 }
 
 int listLength(LinkList L) {
@@ -43,7 +73,60 @@ int listLength(LinkList L) {
     return i;
 }
 
-//-----------------------------------------//
+//--------------SqStack--------------------//
+typedef struct {
+    int data[maxSize];
+    int top;
+}SqStack;
+
+void initStack(SqStack &s) {
+    s.top = -1;
+}
+
+boolean isEmptyStack(SqStack &s) {
+    return (s.top == -1) ? true : false;
+}
+
+boolean push(SqStack &s, int el) {
+    if (s.top == maxSize - 1) return false;
+    s.data[++s.top] = el;
+    return true;
+}
+
+int pop(SqStack &s) {
+    return (s.top == -1) ? false : s.data[s.top--];
+}
+
+//----------------SqQueue-------------------//
+typedef struct {
+    int data[maxSize];
+    int front, rear;
+}SqQueue;
+
+void initQueue(SqQueue &q) {
+    q.front = q.rear = 0;
+}
+
+boolean isEmptyQueue(SqQueue &q) {
+    return (q.front == q.rear) ? true : false;
+}
+
+boolean enQueue(SqQueue &q, int el) {
+    if ((q.rear + 1) % maxSize == q.front) return false;
+    q.data[q.rear] = el;
+    q.rear = (q.rear + 1) % maxSize;
+    return true;
+}
+
+int deQueue(SqQueue &q) {
+    int el;
+    if (q.front == q.rear) return false;
+    el = q.data[q.front];
+    q.front = (q.front + 1) % maxSize;
+    return el;
+}
+
+
 
 //--------------utils----------------------//
 void printArray(int *arr, int len) {
@@ -83,6 +166,7 @@ void printList(LinkList L, int len) {
 	}
 }
 
+//“2134” => 2134
 int toNumber(char a[]) {
     int sign, offset, num = 0;
 

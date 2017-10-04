@@ -1,10 +1,13 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include "utils.h"
 
 int main() {
-    int a[] = {3, 4,5};
-    printArray(a, arrayLength(a));
-
+    SqQueue q;
+    initQueue(q);
+    enQueue(q, 2);
+    enQueue(q, 3);
+    enQueue(q, 4);
+    deQueue(q);
+    printArray(q.data, arrayLength(q.data));
     return 0;
 }

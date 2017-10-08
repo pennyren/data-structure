@@ -1,96 +1,16 @@
 #include <stdio.h>
-#include <stdlib.h>
-#define maxSize 100
-#define true 1
-#define false 0
-typedef int boolean;
+#include "tree.h"
 
-//----------------------BiTree---------------------//
-typedef struct BiTNode {
-    char data;
-    struct BiTNode *lchild, *rchild;
-}BiTNode, *BiTree;
-
-//按先序序列输入节点值，-1代表空树
-void createBiTree(BiTree &T) {
-    int el;
-    scanf("%d", &el);
-    if (el == -1) {
-        T = NULL;
-    } else {
-        T = (BiTNode *)malloc(sizeof(BiTNode));
-        T->data = el;
-        createBiTree(T->lchild);
-        createBiTree(T->rchild);
-    }
-}
-
-//-------------------BTStack---------------//
-typedef struct {
-    BiTNode *data[maxSize];
-    int top;
-}BTStack;
-
-void initBTStack(BTStack &s) {
-    s.top = -1;
-}
-
-boolean isEmptyBTStack(BTStack &s) {
-    return (s.top == -1) ? true : false;
-}
-
-boolean push(BTStack &s, BiTNode *el) {
-    if (s.top == maxSize - 1) return false;
-    s.data[++s.top] = el;
-    return true;
-}
-
-boolean pop(BTStack &s, BiTNode* &el) {
-    if (s.top == -1) {
-        return false;
-    } else {
-        el = s.data[s.top--];
-        return true;
-    }
-}
-
-//----------------Queue-------------------//
-typedef struct {
-    BiTNode *data[maxSize];
-    int front, rear;
-}BTQueue;
-
-void initBTQueue(BTQueue &q) {
-    q.front = q.rear = 0;
-}
-
-boolean isEmptyBTQueue(BTQueue &q) {
-    return (q.front == q.rear) ? true : false;
-}
-
-boolean enQueue(BTQueue &q, BiTNode *el) {
-    if ((q.rear + 1) % maxSize == q.front) return false;
-    q.data[q.rear] = el;
-    q.rear = (q.rear + 1) % maxSize;
-    return true;
-}
-
-boolean deQueue(BTQueue &q, BiTNode* &el) {
-    if (q.front == q.rear) {
-        return false;
-    } else {
-        el = q.data[q.front];
-        q.front = (q.front + 1) % maxSize;
-        return true;
-    }
-}
-
-//---------------Method-----------------//
-void inOrderByStack(BiTree T);
-void levelOrder(BiTree T);
 void inOrder(BiTree T);
+void preOrder(BiTree T);
+void inOrderByStack(BiTree T);
+void postOrderByStack(BiTree T);
+void levelOrder(BiTree T);
+int depth(BiTree T);
+int _depth(BiTree T);
 
 int main() {
+    //重点为后序遍历栈方式、层次遍历、递归遍历
     BiTree T;
     //先序序列输入2 3 -1 6 -1 -1 7 8 -1 -1 9 -1 -1
     createBiTree(T);
@@ -102,16 +22,31 @@ int main() {
     printf("\n");
     printf("Level Order: ");
     levelOrder(T);
+    printf("\n");
+    printf("Post Order by Stack: ");
+    postOrderByStack(T);
+    printf("\n");
+    int dep = depth(T);
+    printf("Tree Depth: %d", dep);
     return 0;
 }
 
 //使用递归遍历二叉树，栈的深度与树的深度一致
-//中序遍历
 void inOrder(BiTree T) {
+    //中序
     if (T) {
         inOrder(T->lchild);
         printf("%d ", T->data);
         inOrder(T->rchild);
+    }
+}
+
+void preOrder(BiTree T) {
+    //先序
+    if (T) {
+        printf("%d ", T->data);
+        preOrder(T->lchild);
+        preOrder(T->rchild);
     }
 }
 
@@ -139,6 +74,37 @@ void inOrderByStack(BiTree T) {
     }
 }
 
+//后序遍历非递归算法
+//特性，当访问节点p时，栈中节点恰好是p的祖先节点
+//即从根节点(栈底)到p节点的一条路径
+void postOrderByStack(BiTree T) {
+    BTStack s;
+    initBTStack(s);
+    //分清返回根节点是从左子树还是右子树
+    //使用visited来指向最近访问过的节点
+    BiTNode *p = T, *visited = NULL;
+    while (p || !isEmptyBTStack(s)) {
+        if (p) {
+            push(s, p);
+            p = p->lchild;
+        } else {
+            p = getTop(s);
+            //右子树存在且未被访问过
+            if (p->rchild && p->rchild != visited) {
+                p = p->rchild;
+                push(s, p);
+                //再走向最左
+                p = p->lchild;
+            } else { //弹出节点信息
+                pop(s, p);
+                printf("%d ", p->data);
+                visited = p;
+                p = NULL; //节点访问完后，重置p指针
+            }
+        }
+    }
+}
+
 //层次遍历，使用队列
 void levelOrder(BiTree T) {
     BTQueue q;
@@ -152,3 +118,43 @@ void levelOrder(BiTree T) {
         if (p->rchild) enQueue(q, p->rchild);
     }
 }
+
+//使用层次遍历求解二叉树的高度
+//使用last指向当前层最右节点，每次出队时与last指针比较
+//若两者相等，层数加一，并让last指向下一层最右节点
+int depth(BiTree T) {
+    if (!T) return 0;
+    //指示
+    int last = 0, level = 0;
+    //队列初始化
+    BiTree que[100];
+    int front = -1, rear = -1;
+    que[++rear] = T; //根节点入队
+    BiTree p;
+    //队列不空，则循环
+    while (front < rear) {
+        //出队
+        p = que[++front];
+        //入队
+        if (p->lchild) que[++rear] = p->lchild;
+        if (p->rchild) que[++rear] = p->rchild;
+        //处理该层最右节点
+        if (front == last) {
+            level++;
+            last = rear;
+            //该层节点数 printf("%d ", rear - front);
+            //遍历最后一层完时front == rear，
+        }
+    }
+    return level;
+}
+
+//递归求高度
+int _depth(BiTree T) {
+    if (!T) return 0;
+    int ldep, rdep;
+    ldep = _depth(T->lchild);
+    rdep = _depth(T->rchild);
+    return ldep > rdep ? ldep + 1 : rdep + 1;
+}
+

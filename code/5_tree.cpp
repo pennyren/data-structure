@@ -151,10 +151,44 @@ int depth(BiTree T) {
 
 //递归求高度
 int _depth(BiTree T) {
-    if (!T) return 0;
     int ldep, rdep;
+    if (!T) return 0;
     ldep = _depth(T->lchild);
     rdep = _depth(T->rchild);
     return ldep > rdep ? ldep + 1 : rdep + 1;
 }
 
+//插入的节点一定是某个叶子节点
+boolean insertBST(BiTree T, int el) {
+    if (T == NULL) {
+        T = (BiTNode *)malloc(sizeof(BiTNode));
+        T->data = el;
+        T->lchild = T->rchild = NULL;
+        return true;
+    } else if (el == T->data) {
+        return false;
+    } else if (el < T->data) {
+        return insertBST(T->lchild, el)
+    } else {
+        return insertBST(T->rchild, el)
+    }
+}
+
+void createBST(BiTree T) {
+    BiTree T = NULL;
+    int el;
+    scanf("%d", &el);
+    while (el != -1) {
+        insertBST(T, el);
+    }
+}
+
+BiTNode *searchBST(BiTree T, int el) {
+    BiTNode *p = NULL;
+    while (T != NULL && el != T->data) {
+        //p指向被查找节点的双亲，用于插入和删除操作
+        p = T;
+        el < T->data ? (T = T->lchild) : (T = T->rchild);
+    }
+    return T;
+}

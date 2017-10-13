@@ -1,5 +1,5 @@
-#ifndef __UTILS_H
-#define __UTILS_H
+#ifndef __GRAPH_H
+#define __GRAPH_H
 
 #include <stdlib.h>
 #define maxVertex 20;

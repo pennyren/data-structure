@@ -12,7 +12,7 @@ int steps(int n) {
 	}
 }
 
-int steps(int n) {
+int _steps(int n) {
 	//todo
 	int record[n];
 	int current = 2;

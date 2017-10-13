@@ -1,5 +1,5 @@
-#ifndef __UTILS_H
-#define __UTILS_H
+#ifndef __TREE_H
+#define __TREE_H
 
 #include <stdlib.h>
 
@@ -53,7 +53,7 @@ boolean push(BTStack &s, BiTNode *el) {
     return true;
 }
 
-boolean pop(BTStack &s, BiTNode* &el) {
+boolean pop(BTStack &s, BiTNode *(&el)) {
     if (s.top == -1) {
         return false;
     } else {
@@ -61,7 +61,7 @@ boolean pop(BTStack &s, BiTNode* &el) {
         return true;
     }
 }
-BiTNode* getTop(BTStack &s) {
+BiTNode *getTop(BTStack &s) {
     return s.data[s.top];
 }
 

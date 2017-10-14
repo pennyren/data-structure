@@ -15,8 +15,16 @@ void getNext(char pattern[], int next[]) {
 }
 
 int KMP(char text[], char pattern[], int next[], int pos) {
-
-    return 1;
+    int i = pos; j = 1;
+    while (i <= text[0] && j <= pattern[0]) {
+        if ( j == 0 || text[i] == pattern[j]) {
+            i++;
+            j++;
+        } else {
+            j = next[j];
+        }
+    }
+    return j > pattern[0] ? i - pattern[0] : 0;
 }
 
 int main() {

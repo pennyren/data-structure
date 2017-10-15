@@ -18,7 +18,7 @@ void getNext(char pattern[], int next[], int plen) {
 //i不需回溯指针，而是利用已经得到的部分匹配结果，将pattern
 //尽可能远的向右滑动一段距离后，再继续进行匹配。
 //而该距离等于当前"部分匹配"结果的成中心对称的前后缀最大相同值。
-//next数组就依次来构造。
+//next数组就以此来构造。
 int KMP(char text[], char pattern[], int next[], int tlen, int plen) {
     int i = 0, j = 0;
     while (i < tlen && j < plen) {

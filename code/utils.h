@@ -2,6 +2,7 @@
 #define __UTILS_H
 
 #include <stdlib.h>
+#include <string.h>
 
 #define true 1
 #define false 0

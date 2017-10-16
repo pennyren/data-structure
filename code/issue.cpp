@@ -15,12 +15,12 @@ int steps(int n) {
 int _steps(int n) {
 	//todo
 	int record[n];
-	int current = 2;
+	int cur = 2;
 	record[0] = 1;
 	record[1] = 2;
-	while (current < n) {
-		record[current] = record[current - 1] + record[current - 2];
-		current++;
+	while (cur < n) {
+		record[cur] = record[cur - 1] + record[cur - 2];
+		cur++;
 	}
 	return record[n - 1];
 }

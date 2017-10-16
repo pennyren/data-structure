@@ -51,6 +51,7 @@ int seqSearch(SeqList &L, int key) {
 int blockSearch(int block[], IndexList L[], int blockLength, int indexLength, int key) {
     int start, last, i;
     if (key > L[indexLength - 1].data) return -1;
+    
     //索引表查找
     for (i = 0; i < indexLength; i++) {
         if (key <= L[i].data) {

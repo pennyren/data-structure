@@ -11,7 +11,7 @@ typedef int boolean;
 
 //----------------------BiTree---------------------//
 typedef struct BiTNode {
-    char data;
+    int data;
     struct BiTNode *lchild, *rchild;
 }BiTNode, *BiTree;
 

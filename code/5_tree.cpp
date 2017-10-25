@@ -168,14 +168,13 @@ boolean insertBST(BiTree T, int el) {
     } else if (el == T->data) {
         return false;
     } else if (el < T->data) {
-        return insertBST(T->lchild, el)
+        return insertBST(T->lchild, el);
     } else {
-        return insertBST(T->rchild, el)
+        return insertBST(T->rchild, el);
     }
 }
 
 void createBST(BiTree T) {
-    BiTree T = NULL;
     int el;
     scanf("%d", &el);
     while (el != -1) {

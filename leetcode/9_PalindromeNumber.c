@@ -1,9 +1,8 @@
 /*
 Determine whether an integer is a palindrome. Do this without extra space.
 
-1. -10, 0 
-2. handle big number
-3. compare half of the digits in x, so don’t need to deal with overflow.
+1. < 0 
+2. handle big number 
 */
 #include <stdio.h>
 
